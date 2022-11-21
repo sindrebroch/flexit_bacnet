@@ -4,7 +4,8 @@
 	"name": "Flexit Bacnet development",
 	"context": "..",
 	"appPort": [
-		"9123:8123"
+		"8123:8123",
+		"47808:47808"
 	],
 	"postCreateCommand": "container install",
 	"extensions": [

@@ -15,7 +15,7 @@ CONFIG_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_NAME, default="Flexit Local"): str,
         vol.Required(CONF_ADDRESS, default="192.168.1.129/24"): str,
-        vol.Required(CONF_DEVICE_ID, default=0): int,
+        vol.Required(CONF_DEVICE_ID, default=4194303): int,
     }
 )
 

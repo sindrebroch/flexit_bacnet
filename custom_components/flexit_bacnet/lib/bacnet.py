@@ -27,7 +27,7 @@ def get_local_ip(device_address: str) -> None | str:
 @contextmanager
 def run_bacnet(device_address: str) -> Lite:
     """Return a running BACnet application to accept read and write requests."""
-    bacnet_lite = BAC0.lite(get_local_ip(device_address), ping=False)
+    bacnet_lite = BAC0.lite(ip=get_local_ip(device_address), ping=False)
 
     try:
         yield bacnet_lite
