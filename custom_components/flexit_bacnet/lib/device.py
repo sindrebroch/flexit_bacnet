@@ -55,22 +55,22 @@ class FlexitBACnet:
     @property
     def outside_air_temperature(self) -> float:
         """Outside air temperature in degrees Celsius, e.g. 14.3."""
-        return round(self._get_value(OUTSIDE_AIR_TEMPERATURE), 1)
+        return round(self._get_value(OUTSIDE_AIR_TEMPERATURE), 2)
 
     @property
     def supply_air_temperature(self) -> float:
         """Supply air temperature in degrees Celsius, e.g. 18.9."""
-        return round(self._get_value(SUPPLY_AIR_TEMPERATURE), 1)
+        return round(self._get_value(SUPPLY_AIR_TEMPERATURE), 2)
 
     @property
     def exhaust_air_temperature(self) -> float:
         """Exhaust air temperature in degrees Celsius, e.g. 14.5."""
-        return round(self._get_value(EXHAUST_AIR_TEMPERATURE), 1)
+        return round(self._get_value(EXHAUST_AIR_TEMPERATURE), 2)
 
     @property
     def extract_air_temperature(self) -> float:
         """Extract air temperature in degrees Celsius, e.g. 14.3."""
-        return round(self._get_value(EXTRACT_AIR_TEMPERATURE), 1)
+        return round(self._get_value(EXTRACT_AIR_TEMPERATURE), 2)
 
     @property
     def room_temperature(self) -> float:
@@ -78,7 +78,7 @@ class FlexitBACnet:
 
         Temperature is read from the temperature sensor on a CI70 panel.
         """
-        return round(self._get_value(ROOM_TEMPERATURE), 1)
+        return round(self._get_value(ROOM_TEMPERATURE), 2)
 
     @property
     def comfort_button(self) -> str:
@@ -153,6 +153,15 @@ class FlexitBACnet:
         self._set_value(FIREPLACE_VENTILATION, FIREPLACE_VENTILATION.TRIGGER)
 
     @property
+    def fireplace_ventilation_duration(self) -> int:
+        """Return duration (in minutes) of fireplace ventilation mode."""
+        return self._get_value(FIREPLACE_VENTILATION_RUNTIME)
+
+    def set_fireplace_ventilation_duration(self, minutes: int) -> int:
+        """Sets duration (in minutes) of fireplace ventilation mode."""
+        self._set_value(FIREPLACE_VENTILATION_RUNTIME, minutes)
+
+    @property
     def fireplace_ventilation_remaining_duration(self) -> int:
         """Return remaining duration (in minutes) of fireplace ventilation mode."""
         return self._get_value(FIREPLACE_VENTILATION_REMAINING_DURATION)
@@ -164,6 +173,16 @@ class FlexitBACnet:
         """
         self._set_value(RAPID_VENTILATION_RUNTIME, minutes)
         self._set_value(RAPID_VENTILATION, RAPID_VENTILATION.TRIGGER)
+
+    @property
+    def rapid_ventilation_duration(self) -> int:
+        """Return duration (in minutes) of rapid ventilation mode."""
+        return self._get_value(RAPID_VENTILATION_RUNTIME)
+
+    @property
+    def set_rapid_ventilation_duration(self, minutes: int) -> int:
+        """Sets duration (in minutes) of rapid ventilation mode."""
+        self._set_value(RAPID_VENTILATION_RUNTIME, minutes)
 
     @property
     def rapid_ventilation_remaining_duration(self) -> int:
@@ -343,3 +362,20 @@ class FlexitBACnet:
     def scheduler_override(self) -> bool:
         """Returns True if scheduler is overridden."""
         return self._get_value(SCHEDULER_OVERRIDE) == SCHEDULER_OVERRIDE.ACTIVE
+
+    def activate_schedule_override(self):
+        """Returns True if scheduler is overridden."""
+        self._set_value(SCHEDULER_OVERRIDE, SCHEDULER_OVERRIDE.ACTIVE)
+
+    def deactivate_schedule_override(self):
+        """Returns True if scheduler is overridden."""
+        self._set_value(SCHEDULER_OVERRIDE, SCHEDULER_OVERRIDE.INACTIVE)
+
+    @property
+    def away_delay(self) -> bool:
+        """Returns delay for away-mode."""
+        return self._get_value(DELAY_FOR_AWAY_ACTIVE)
+
+    def set_away_delay(self, minutes: int) -> bool:
+        """Sets delay for away-mode."""
+        self._set_value(DELAY_FOR_AWAY_ACTIVE, minutes)

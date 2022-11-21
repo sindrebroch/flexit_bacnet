@@ -73,22 +73,6 @@ SENSORS = [
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
     ),
-
-
-    SensorEntityDescription(
-        name="Fireplace ventilation remaining duration",
-        key="fireplace_ventilation_remaining_duration",
-        device_class=SensorDeviceClass.DURATION,
-        state_class=SensorStateClass.MEASUREMENT,
-        native_unit_of_measurement=TIME_MINUTES,
-    ),
-    SensorEntityDescription(
-        name="Rapid ventilation remaining duration",
-        key="rapid_ventilation_remaining_duration",
-        device_class=SensorDeviceClass.DURATION,
-        state_class=SensorStateClass.MEASUREMENT,
-        native_unit_of_measurement=TIME_MINUTES,
-    ),
     SensorEntityDescription(
         name="Supply Fan Control Signal",
         key="supply_air_fan_control_signal",
@@ -143,9 +127,14 @@ SENSORS = [
         icon=FAN_ICON,
         native_unit_of_measurement=PERCENTAGE,
     ),
+
     SensorEntityDescription(
-        name="Scheduler override",
-        key="scheduler_override",
+        name="fireplace_ventilation_remaining_duration",
+        key="fireplace_ventilation_remaining_duration",
+    ),
+    SensorEntityDescription(
+        name="rapid_ventilation_remaining_duration",
+        key="rapid_ventilation_remaining_duration",
     ),
 ]
 

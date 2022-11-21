@@ -18,14 +18,17 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .const import DOMAIN
 from .coordinator import FlexitDataUpdateCoordinator
 
-SWITCHES: Tuple[SwitchEntityDescription, ...] = (
-    SwitchEntityDescription(
-        key="comfort_button",
-        name="Comfort button",
-        entity_category=EntityCategory.CONFIG,
-    ),
+COMFORT_BUTTON = SwitchEntityDescription(
+    key="comfort_button",
+    name="Comfort button",
+    entity_category=EntityCategory.CONFIG,
 )
 
+SCHEDULER_OVERRIDE = SwitchEntityDescription(
+    key="scheduler_override",
+    name="Scheduler override",
+    entity_category=EntityCategory.CONFIG,
+)
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -34,10 +37,10 @@ async def async_setup_entry(
 ) -> None:
     """Set up the Flexit switch."""
     coordinator: FlexitDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_entities(
-        FlexitSwitch(coordinator, description)
-        for description in SWITCHES
-    )
+    async_add_entities([
+        FlexitComfortSwitch(coordinator, COMFORT_BUTTON),
+        FlexitCalendarOverrideSwitch(coordinator, SCHEDULER_OVERRIDE),
+    ])
 
 class FlexitSwitch(CoordinatorEntity, SwitchEntity):
     """Representation of a Flexit switch."""
@@ -67,12 +70,24 @@ class FlexitSwitch(CoordinatorEntity, SwitchEntity):
         """Return the state."""
         return self.coordinator.device.__getattribute__(self.entity_description.key)
 
-    async def async_turn_on(self, **kwargs: Any) -> None:
+class FlexitComfortSwitch(FlexitSwitch):
+    def turn_on(self, **kwargs: Any) -> None:
         """Turn the entity on."""
-        await self.coordinator.device.activate_comfort_button()
+        self.coordinator.device.activate_comfort_button()
         self.update()
 
-    async def async_turn_off(self, **kwargs: Any) -> None:
+    def turn_off(self, **kwargs: Any) -> None:
         """Turn the entity off."""
-        await self.coordinator.device.deactivate_comfort_button()
+        self.coordinator.device.deactivate_comfort_button()
+        self.update()
+
+class FlexitCalendarOverrideSwitch(FlexitSwitch):
+    def turn_on(self, **kwargs: Any) -> None:
+        """Turn the entity on."""
+        self.coordinator.device.activate_schedule_override()
+        self.update()
+
+    def turn_off(self, **kwargs: Any) -> None:
+        """Turn the entity off."""
+        self.coordinator.device.deactivate_schedule_override()
         self.update()

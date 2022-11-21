@@ -18,5 +18,5 @@ async def async_get_config_entry_diagnostics(
     coordinator: FlexitDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
 
     return {
-        "flexit_bacnet": str(coordinator.device),
+        "flexit_bacnet": str(coordinator.device._state),
     }

@@ -15,7 +15,7 @@ from homeassistant.components.number.const import (
     MODE_AUTO,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import PERCENTAGE
+from homeassistant.const import PERCENTAGE, TIME_MINUTES
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -52,7 +52,6 @@ SETPOINT_HOME_EXTRACT = FlexitNumberEntityDescription(
     native_max_value=100,
     icon="mdi:fan",
 )
-
 SETPOINT_AWAY_SUPPLY = FlexitNumberEntityDescription(
     key="fan_setpoint_supply_air_away",
     name="Fan Setpoint Away Supply",
@@ -71,7 +70,6 @@ SETPOINT_AWAY_EXTRACT = FlexitNumberEntityDescription(
     native_max_value=100,
     icon="mdi:fan",
 )
-
 SETPOINT_HIGH_SUPPLY = FlexitNumberEntityDescription(
     key="fan_setpoint_supply_air_high",
     name="Fan Setpoint High Supply",
@@ -90,7 +88,6 @@ SETPOINT_HIGH_EXTRACT = FlexitNumberEntityDescription(
     native_max_value=100,
     icon="mdi:fan",
 )
-
 SETPOINT_FIRE_SUPPLY = FlexitNumberEntityDescription(
     key="fan_setpoint_supply_air_fire",
     name="Fan Setpoint Fire Supply",
@@ -109,7 +106,6 @@ SETPOINT_FIRE_EXTRACT = FlexitNumberEntityDescription(
     native_max_value=100,
     icon="mdi:fan",
 )
-
 SETPOINT_COOKER_SUPPLY = FlexitNumberEntityDescription(
     key="fan_setpoint_supply_air_cooker",
     name="Fan Setpoint Cooker Supply",
@@ -127,6 +123,34 @@ SETPOINT_COOKER_EXTRACT = FlexitNumberEntityDescription(
     native_min_value=30,
     native_max_value=100,
     icon="mdi:fan",
+)
+
+FIREPLACE_DELAY = FlexitNumberEntityDescription(
+    key="fireplace_ventilation_duration",
+    name="Fireplace ventilation duration",
+    native_unit_of_measurement=TIME_MINUTES,
+    entity_category=EntityCategory.CONFIG,
+    native_min_value=0.0,
+    native_max_value=300.00,
+    icon="mdi:timer",
+)
+BOOST_DELAY = FlexitNumberEntityDescription(
+    key="rapid_ventilation_duration",
+    name="Rapid ventilation duration",
+    native_unit_of_measurement=TIME_MINUTES,
+    entity_category=EntityCategory.CONFIG,
+    native_min_value=0.0,
+    native_max_value=300.00,
+    icon="mdi:timer",
+)
+AWAY_DELAY = FlexitNumberEntityDescription(
+    key="away_delay",
+    name="Away delay",
+    native_unit_of_measurement=TIME_MINUTES,
+    entity_category=EntityCategory.CONFIG,
+    native_min_value=0.0,
+    native_max_value=300.00,
+    icon="mdi:timer",
 )
 
 async def async_setup_entry(
@@ -149,9 +173,10 @@ async def async_setup_entry(
         FlexitSetpointFireSupplyNumber(coordinator, SETPOINT_FIRE_SUPPLY),
         FlexitSetpointCookerExtractNumber(coordinator, SETPOINT_COOKER_EXTRACT),
         FlexitSetpointCookerSupplyNumber(coordinator, SETPOINT_COOKER_SUPPLY),
+        FlexitAwayDelayNumber(coordinator, AWAY_DELAY),
+        FlexitBoostDelayNumber(coordinator, BOOST_DELAY),
+        FlexitFireplaceDelayNumber(coordinator, FIREPLACE_DELAY),
     ])
-
-
 
 class FlexitNumber(CoordinatorEntity, NumberEntity):
     """Define a Flexit entity."""
@@ -237,4 +262,19 @@ class FlexitSetpointCookerExtractNumber(FlexitNumber):
 class FlexitSetpointCookerSupplyNumber(FlexitNumber):
     async def async_set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_cooker(value)
+        self.update()
+
+class FlexitAwayDelayNumber(FlexitNumber):
+    async def async_set_native_value(self, value: float) -> None:
+        self.coordinator.device.set_away_delay(value)
+        self.update()
+
+class FlexitBoostDelayNumber(FlexitNumber):
+    async def async_set_native_value(self, value: float) -> None:
+        self.coordinator.device.set_rapid_ventilation_duration(value)
+        self.update()
+
+class FlexitFireplaceDelayNumber(FlexitNumber):
+    async def async_set_native_value(self, value: float) -> None:
+        self.coordinator.device.set_fireplace_ventilation_duration(int(value))
         self.update()
