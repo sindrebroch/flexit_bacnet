@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from .const import DOMAIN, LOGGER
 
 from homeassistant.core import HomeAssistant
@@ -25,16 +27,17 @@ class FlexitDataUpdateCoordinator(DataUpdateCoordinator):
         self._attr_device_info = DeviceInfo(
             name=self.name,
             manufacturer="Flexit Bacnet",
-            identifiers={(DOMAIN, self.name)},
+            model=self.device.device_name,
+            identifiers={(DOMAIN, self.device.serial_number)},
         )
 
         super().__init__(
             hass,
             LOGGER,
             name=DOMAIN,
+            update_interval=timedelta(minutes=1)
         )
 
     async def _async_update_data(self):
         """Update data via library."""
-
-        LOGGER.info("Updating")
+        self.device.refresh()
