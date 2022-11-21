@@ -60,7 +60,7 @@ class FlexitSwitch(CoordinatorEntity, SwitchEntity):
 
     def update(self) -> None:
         """Refresh unit state."""
-        self._device.refresh()
+        self.coordinator.device.refresh()
 
     @property
     def is_on(self) -> bool:

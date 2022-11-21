@@ -73,20 +73,7 @@ SENSORS = [
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
     ),
-    SensorEntityDescription(
-        name="Fan setpoint supply air home",
-        key="fan_setpoint_supply_air_home",
-        icon=FAN_ICON,
-        state_class=SensorStateClass.MEASUREMENT,
-        native_unit_of_measurement=PERCENTAGE,
-    ),
-    SensorEntityDescription(
-        name="Fan setpoint extract air home",
-        key="fan_setpoint_extract_air_home",
-        icon=FAN_ICON,
-        state_class=SensorStateClass.MEASUREMENT,
-        native_unit_of_measurement=PERCENTAGE,
-    ),
+
 
     SensorEntityDescription(
         name="Fireplace ventilation remaining duration",
@@ -144,54 +131,7 @@ SENSORS = [
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=POWER_KILO_WATT,
     ),
-    SensorEntityDescription(
-        name="Fan setpoint High Supply",
-        key="fan_setpoint_supply_air_high",
-        icon=FAN_ICON,
-        native_unit_of_measurement=PERCENTAGE,
-    ),
-    SensorEntityDescription(
-        name="Fan setpoint High Extract",
-        key="fan_setpoint_extract_air_high",
-        icon=FAN_ICON,
-        native_unit_of_measurement=PERCENTAGE,
-    ),
-    SensorEntityDescription(
-        name="Fan setpoint Away Supply",
-        key="fan_setpoint_supply_air_away",
-        icon=FAN_ICON,
-        native_unit_of_measurement=PERCENTAGE,
-    ),
-    SensorEntityDescription(
-        name="Fan setpoint Away Extract",
-        key="fan_setpoint_extract_air_away",
-        icon=FAN_ICON,
-        native_unit_of_measurement=PERCENTAGE,
-    ),
-    SensorEntityDescription(
-        name="Fan setpoint Cooker hood Supply",
-        key="fan_setpoint_supply_air_cooker",
-        icon=FAN_ICON,
-        native_unit_of_measurement=PERCENTAGE,
-    ),
-    SensorEntityDescription(
-        name="Fan setpoint Cooker hood Extract",
-        key="fan_setpoint_extract_air_cooker",
-        icon=FAN_ICON,
-        native_unit_of_measurement=PERCENTAGE,
-    ),
-    SensorEntityDescription(
-        name="Fan setpoint Fireplace Supply",
-        key="fan_setpoint_supply_air_fire",
-        icon=FAN_ICON,
-        native_unit_of_measurement=PERCENTAGE,
-    ),
-    SensorEntityDescription(
-        name="Fan setpoint Fireplace Extract",
-        key="fan_setpoint_extract_air_fire",
-        icon=FAN_ICON,
-        native_unit_of_measurement=PERCENTAGE,
-    ),
+
     SensorEntityDescription(
         name="Heat exchanger efficiency",
         key="heat_exchanger_efficiency",
