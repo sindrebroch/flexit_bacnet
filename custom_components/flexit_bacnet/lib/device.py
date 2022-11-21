@@ -1,9 +1,9 @@
 from typing import Any
 
-from flexit_bacnet import bacnet
-from flexit_bacnet.device_property import PRESENT_VALUE
-from flexit_bacnet.nordic import *
-from flexit_bacnet.typing import DeviceState
+from . import bacnet
+from .device_property import PRESENT_VALUE
+from .nordic import *
+from .typing import DeviceState
 
 
 class FlexitBACnet:

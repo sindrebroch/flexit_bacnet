@@ -3,7 +3,7 @@ from flexit_bacnet import FlexitBACnet
 
 if __name__ == '__main__':
     # create a FlexitBACnet device instance with the IP address and Device ID
-    device = FlexitBACnet('192.168.0.18', 2)
+    device = FlexitBACnet('192.168.1.129', 4194303)
 
     # check whether device address and ID are correct
     if not device.is_valid():

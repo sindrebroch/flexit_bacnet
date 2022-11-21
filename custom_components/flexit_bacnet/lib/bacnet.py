@@ -5,8 +5,8 @@ import BAC0
 from BAC0.scripts import Lite
 from decorator import contextmanager
 
-from flexit_bacnet.device_property import DeviceProperty, PRESENT_VALUE
-from flexit_bacnet.typing import DeviceState
+from .device_property import DeviceProperty, PRESENT_VALUE
+from .typing import DeviceState
 
 BAC0.log_level('silence')
 

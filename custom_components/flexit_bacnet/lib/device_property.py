@@ -1,4 +1,4 @@
-from flexit_bacnet.typing import ObjectIdentifier
+from .typing import ObjectIdentifier
 
 PRESENT_VALUE = 'presentValue'
 
