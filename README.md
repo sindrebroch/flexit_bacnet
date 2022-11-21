@@ -92,3 +92,20 @@ In order to use that library, you need to know the IP address and Device ID of y
 ### Binary sensor-entities
 
 - Dirty filter
+  - Hours since change
+  - Hours until dirty
+  - Filter change interval hours
+  - Days since change
+  - Days until dirty
+  - Filter change interval days
+
+## Debugging
+
+If something is not working properly, logs might help with debugging. To turn on debug-logging add this to your `configuration.yaml`
+
+```
+logger:
+  default: info
+  logs:
+    custom_components.flexit: debug
+```
