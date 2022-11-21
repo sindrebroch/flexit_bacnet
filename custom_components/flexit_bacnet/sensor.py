@@ -9,7 +9,7 @@ from homeassistant.components.sensor import (
 )
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import PERCENTAGE, TEMP_CELSIUS, REVOLUTIONS_PER_MINUTE, TIME_HOURS, TIME_MINUTES, ENERGY_KILO_WATT_HOUR
+from homeassistant.const import PERCENTAGE, TEMP_CELSIUS, REVOLUTIONS_PER_MINUTE, TIME_HOURS, TIME_MINUTES, POWER_KILO_WATT
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -25,15 +25,11 @@ HEATING_ICON = "mdi:radiator"
 
 SENSORS = [
     SensorEntityDescription(
-        name="Comfort button",
-        key="comfort_button",
-    ),
-    SensorEntityDescription(
-        name="Operation mode",
+        name="Mode Operation",
         key="operation_mode",
     ),
     SensorEntityDescription(
-        name="Ventilation mode",
+        name="Mode Ventilation",
         key="ventilation_mode",
     ),
 
@@ -77,24 +73,6 @@ SENSORS = [
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
     ),
-
-    SensorEntityDescription(
-        name="Air temp setpoint away",
-        key="air_temp_setpoint_away",
-        icon=TEMPERATURE_ICON,
-        native_unit_of_measurement=TEMP_CELSIUS,
-        device_class=SensorDeviceClass.TEMPERATURE,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    SensorEntityDescription(
-        name="Air temp setpoint home",
-        key="air_temp_setpoint_home",
-        icon=TEMPERATURE_ICON,
-        native_unit_of_measurement=TEMP_CELSIUS,
-        device_class=SensorDeviceClass.TEMPERATURE,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-
     SensorEntityDescription(
         name="Fan setpoint supply air home",
         key="fan_setpoint_supply_air_home",
@@ -153,23 +131,18 @@ SENSORS = [
         native_unit_of_measurement=REVOLUTIONS_PER_MINUTE,
     ),
     SensorEntityDescription(
-        name="Electric heater",
-        icon=HEATING_ICON,
-        key="electric_heater",
-    ),
-    SensorEntityDescription(
         name="Electric heater nominal power",
         key="electric_heater_nominal_power",
         device_class=SensorDeviceClass.POWER,
         icon=HEATING_ICON,
-        native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
+        native_unit_of_measurement=POWER_KILO_WATT,
     ),
     SensorEntityDescription(
         name="Electric heater power",
         key="electric_heater_power",
         icon=HEATING_ICON,
         device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
+        native_unit_of_measurement=POWER_KILO_WATT,
     ),
     SensorEntityDescription(
         name="Fan setpoint supply air high",
@@ -262,7 +235,6 @@ class FlexitSensor(CoordinatorEntity, SensorEntity):
         self.entity_description = description
         self._attr_unique_id = f"{description.key}"
         self._attr_device_info = coordinator._attr_device_info
-
 
     @property
     def native_value(self) -> StateType:
