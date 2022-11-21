@@ -28,10 +28,7 @@ async def async_setup_entry(
 ) -> None:
     """Set up the Honeywell thermostat."""
     coordinator: FlexitDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
-    device: FlexitBACnet = coordinator.device
-
-
-    async_add_entities([FlexitClimateEntity(device, coordinator)])
+    async_add_entities([FlexitClimateEntity(coordinator)])
 
 
 class FlexitClimateEntity(ClimateEntity):
@@ -64,45 +61,44 @@ class FlexitClimateEntity(ClimateEntity):
 
     def __init__(
         self,
-        device: FlexitBACnet,
         coordinator: FlexitDataUpdateCoordinator,
     ) -> None:
         """Initialize the unit."""
-        self._device = device
-        self._attr_unique_id = f"{DOMAIN}.{device.serial_number}"
+        self.coordinator = coordinator
+        self._attr_unique_id = f"{DOMAIN}.{self.coordinator.device.serial_number}"
         self._attr_device_info = coordinator._attr_device_info
 
     def update(self) -> None:
         """Refresh unit state."""
-        self._device.refresh()
+        self.coordinator.device.refresh()
 
     @property
     def name(self) -> str:
         """Name of the entity."""
-        return f"Flexit Nordic: {self._device.serial_number}"
+        return f"Flexit Nordic: {self.coordinator.device.serial_number}"
 
     @property
     def current_temperature(self) -> float:
         """Return the current temperature."""
-        return float(self._device.room_temperature)
+        return float(self.coordinator.device.room_temperature)
 
     @property
     def target_temperature(self) -> float:
         """Return the temperature we try to reach."""
-        if self._device.ventilation_mode == VENTILATION_MODES[VENTILATION_MODE.AWAY]:
-            return float(self._device.air_temp_setpoint_away)
+        if self.coordinator.device.ventilation_mode == VENTILATION_MODES[VENTILATION_MODE.AWAY]:
+            return float(self.coordinator.device.air_temp_setpoint_away)
 
-        return float(self._device.air_temp_setpoint_home)
+        return float(self.coordinator.device.air_temp_setpoint_home)
 
     def set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
         if (temperature := kwargs.get(ATTR_TEMPERATURE)) is None:
             return
 
-        if self._device.ventilation_mode == VENTILATION_MODES[VENTILATION_MODE.AWAY]:
-            self._device.set_air_temp_setpoint_away(temperature)
+        if self.coordinator.device.ventilation_mode == VENTILATION_MODES[VENTILATION_MODE.AWAY]:
+            self.coordinator.device.set_air_temp_setpoint_away(temperature)
         else:
-            self._device.set_air_temp_setpoint_home(temperature)
+            self.coordinator.device.set_air_temp_setpoint_home(temperature)
         self.update()
 
     @property
@@ -115,7 +111,7 @@ class FlexitClimateEntity(ClimateEntity):
             VENTILATION_MODES[VENTILATION_MODE.AWAY]: PRESET_AWAY,
             VENTILATION_MODES[VENTILATION_MODE.HOME]: PRESET_HOME,
             VENTILATION_MODES[VENTILATION_MODE.HIGH]: PRESET_BOOST,
-        }[self._device.ventilation_mode]
+        }[self.coordinator.device.ventilation_mode]
 
     def set_preset_mode(self, preset_mode: str) -> None:
         """Set new preset mode."""
@@ -126,13 +122,13 @@ class FlexitClimateEntity(ClimateEntity):
             PRESET_BOOST: VENTILATION_MODE.HIGH,
         }[preset_mode]
 
-        self._device.set_ventilation_mode(ventilation_mode)
+        self.coordinator.device.set_ventilation_mode(ventilation_mode)
         self.update()
 
     @property
     def hvac_mode(self) -> HVACMode:
         """Return hvac operation ie. heat, cool mode."""
-        if self._device.ventilation_mode == VENTILATION_MODES[VENTILATION_MODE.STOP]:
+        if self.coordinator.device.ventilation_mode == VENTILATION_MODES[VENTILATION_MODE.STOP]:
             return HVACMode.OFF
 
         if self.is_aux_heat:
@@ -143,9 +139,9 @@ class FlexitClimateEntity(ClimateEntity):
     def set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         """Set new target hvac mode."""
         if hvac_mode == HVACMode.OFF:
-            self._device.set_ventilation_mode(VENTILATION_MODE.STOP)
+            self.coordinator.device.set_ventilation_mode(VENTILATION_MODE.STOP)
         else:
-            self._device.set_ventilation_mode(VENTILATION_MODE.HOME)
+            self.coordinator.device.set_ventilation_mode(VENTILATION_MODE.HOME)
 
         if hvac_mode == HVACMode.HEAT:
             self.turn_aux_heat_on()
@@ -158,14 +154,14 @@ class FlexitClimateEntity(ClimateEntity):
         """Return true if aux heater.
         Requires ClimateEntityFeature.AUX_HEAT.
         """
-        return bool(self._device.electric_heater)
+        return bool(self.coordinator.device.electric_heater)
 
     def turn_aux_heat_on(self) -> None:
         """Turn auxiliary heater on."""
-        self._device.enable_electric_heater()
+        self.coordinator.device.enable_electric_heater()
         self.update()
 
     def turn_aux_heat_off(self) -> None:
         """Turn auxiliary heater off."""
-        self._device.disable_electric_heater()
+        self.coordinator.device.disable_electric_heater()
         self.update()
