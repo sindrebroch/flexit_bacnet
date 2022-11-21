@@ -1,4 +1,7 @@
-# Flexit BACnet
+# Flexit BACnet for HomeAssistant
+
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/sindrebroch/flexit_bacnet?style=flat-square)
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
 
 This library allows integration with Flexit Nordic series of air handling units via BACnet protocol.
 
@@ -13,55 +16,79 @@ In order to use that library, you need to know the IP address and Device ID of y
 5. Open "More" menu -> Installer -> Communication -> BACnet settings.
 6. Note down "IP address" and "Device ID".
 
-## Connecting to a device
+## Installation
 
-```python
-# import FlexitBACnet
-from flexit_bacnet import FlexitBACnet
+<details>
+  <summary>HACS (Recommanded)</summary>
 
-if __name__ == '__main__':
-    # create a FlexitBACnet device instance with the IP address and Device ID
-    device = FlexitBACnet('192.168.0.18', 2)
+1. Ensure that [HACS](https://hacs.xyz/) is installed.
+2. Add this repository as a custom repository
+3. Search for and install the "Flexit Bacnet" integration.
+4. Restart Home Assistant.
+5. Add the `Flexit Bacnet` integration to HA from the integration-page
+6. Enter your IP address and DeviceID
+</details>
 
-    # check whether device address and ID are correct
-    if not device.is_valid():
-        raise Exception('not a valid device')
+<details>
+  <summary>Manual installation</summary>
 
-    # check device name and s/n
-    print('Device Name:', device.device_name)
-    print('Serial Number:', device.serial_number)
-```
+1. Download the `Source code (zip)` file from the
+   [latest release](https://github.com/sindrebroch/flexit_bacnet/releases/latest).
+2. Unpack the release and copy the `custom_components/flexit_bacnet` directory
+   into the `custom_components` directory of your Home Assistant
+   installation.
+3. Restart Home Assistant.
+4. Add the `Flexit Bacnet` integration to HA from the integration-page
+6. Enter your IP address and DeviceID
+</details>
 
-## Interacting with the device
+## Features
 
-For list of available states and interactions, please study [device.py](./flexit_bacnet/device.py).
+### Climate-entity
 
-For example, changing ventilation mode can be done as follows:
+- Preset modes:
+  - Home
+  - Away
+  - Boost
+- Operation modes:
+  - Fan only
+  - Heat
+  - Off
+- Viewable modes:
+  - Home
+  - Away
+  - Boost
 
-```python
-# import FlexitBACnet
-from flexit_bacnet import (
-    FlexitBACnet,
-    VENTILATION_MODE,
-)
+### Sensor-entities
 
-if __name__ == '__main__':
-    # create a FlexitBACnet device instance with the IP address and Device ID
-    device = FlexitBACnet('192.168.0.18', 2)
+- Electric heater nominal power
+- Electric heater power
+- Heat exchanger efficiency
+- Heat exchanger speed
 
-    # check current ventilation mode
-    print('ventilation mode (before):', device.ventilation_mode)
+- Fan Control Signal Extract
+- Fan Control Signal Supply
+- Fan Speed Extract
+- Fan Speed Supply
 
-    # set ventilation mode to High
-    device.set_ventilation_mode(VENTILATION_MODE.HIGH)
+- Temperature Extract
+- Temperature Exhaust
+- Temperature Outside
+- Temperature Supply
+- Temperature Room
 
-    # check current ventilation mode again
-    print('ventilation mode (after):', device.ventilation_mode)
-```
+- Fan setpoint for all modes
+- Fireplace remaining
+- Rapid ventilation remaining
 
-Which would result in the following output:
+- Scheduler override
+- Mode operation
+- Mode ventilation
 
-```text
-ventilation mode (before): Home
-ventilation mode (after): High
-```
+### Switch-entities
+
+- Comfort button
+
+### Binary sensor-entities
+
+- Dirty filter
