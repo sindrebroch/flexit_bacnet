@@ -338,3 +338,8 @@ class FlexitBACnet:
     def reset_air_filter_timer(self):
         """Resets air filter replace timer."""
         self._set_value(AIR_FILTER_REPLACE_TIMER_RESET, AIR_FILTER_REPLACE_TIMER_RESET.TRIGGER)
+
+    @property
+    def scheduler_override(self) -> bool:
+        """Returns True if scheduler is overridden."""
+        return self._get_value(SCHEDULER_OVERRIDE) == SCHEDULER_OVERRIDE.ACTIVE

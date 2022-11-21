@@ -11,6 +11,7 @@ CONF_ADDRESS="address"
 CONF_DEVICE_ID="device_id"
 
 PLATFORMS: List[str] = [
+    Platform.BINARY_SENSOR,
     Platform.CLIMATE,
     Platform.SENSOR,
 ]

@@ -19,7 +19,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-
+from .coordinator import FlexitDataUpdateCoordinator
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -30,11 +30,14 @@ async def async_setup_entry(
     coordinator: FlexitDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
     device: FlexitBACnet = coordinator.device
 
-    async_add_entities([FlexitClimateEntity(device)])
+
+    async_add_entities([FlexitClimateEntity(device, coordinator)])
 
 
 class FlexitClimateEntity(ClimateEntity):
     """Flexit air handling unit."""
+
+    coordinator: FlexitDataUpdateCoordinator
 
     _attr_supported_features = (
         ClimateEntityFeature.PRESET_MODE
@@ -59,10 +62,15 @@ class FlexitClimateEntity(ClimateEntity):
     _attr_has_entity_name = True
     _attr_icon = "mdi:hvac"
 
-    def __init__(self, device: FlexitBACnet) -> None:
+    def __init__(
+        self,
+        device: FlexitBACnet,
+        coordinator: FlexitDataUpdateCoordinator,
+    ) -> None:
         """Initialize the unit."""
         self._device = device
         self._attr_unique_id = f"{DOMAIN}.{device.serial_number}"
+        self._attr_device_info = coordinator._attr_device_info
 
     def update(self) -> None:
         """Refresh unit state."""
@@ -95,6 +103,7 @@ class FlexitClimateEntity(ClimateEntity):
             self._device.set_air_temp_setpoint_away(temperature)
         else:
             self._device.set_air_temp_setpoint_home(temperature)
+        self.update()
 
     @property
     def preset_mode(self) -> str:
@@ -118,6 +127,7 @@ class FlexitClimateEntity(ClimateEntity):
         }[preset_mode]
 
         self._device.set_ventilation_mode(ventilation_mode)
+        self.update()
 
     @property
     def hvac_mode(self) -> HVACMode:
@@ -141,6 +151,7 @@ class FlexitClimateEntity(ClimateEntity):
             self.turn_aux_heat_on()
         else:
             self.turn_aux_heat_off()
+        self.update()
 
     @property
     def is_aux_heat(self) -> bool:
@@ -152,21 +163,9 @@ class FlexitClimateEntity(ClimateEntity):
     def turn_aux_heat_on(self) -> None:
         """Turn auxiliary heater on."""
         self._device.enable_electric_heater()
+        self.update()
 
     def turn_aux_heat_off(self) -> None:
         """Turn auxiliary heater off."""
         self._device.disable_electric_heater()
-
-    @property
-    def extra_state_attributes(self) -> dict[str, Any]:
-        """Return device specific state attributes."""
-        return {
-            "air_filter_operating_time": self._device.air_filter_operating_time,
-            "air_filter_polluted": self._device.air_filter_polluted,
-            "heat_exchanger_speed": self._device.heat_exchanger_speed,
-            "outside_air_temperature": self._device.outside_air_temperature,
-            "supply_air_temperature": self._device.supply_air_temperature,
-            "extract_air_temperature": self._device.extract_air_temperature,
-            "exhaust_air_temperature": self._device.exhaust_air_temperature,
-            "electric_heater_power": self._device.electric_heater_power,
-        }
+        self.update()

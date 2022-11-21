@@ -164,6 +164,10 @@ AIR_FILTER_TIME_PERIOD_FOR_EXCHANGE = DeviceProperty('analogValue', 286)
 AIR_FILTER_POLLUTED = DeviceProperty('binaryValue', 522)
 AIR_FILTER_POLLUTED.ACTIVE = 'active'
 
+# Scheduler override (e.g. inactive)
+SCHEDULER_OVERRIDE = DeviceProperty('binaryValue', 522)
+SCHEDULER_OVERRIDE.ACTIVE = 'active'
+
 # Air filter replace timer reset (e.g. 1 None)
 AIR_FILTER_REPLACE_TIMER_RESET = DeviceProperty('multiStateValue', 613)
 AIR_FILTER_REPLACE_TIMER_RESET.TRIGGER = 2
