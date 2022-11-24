@@ -9,6 +9,9 @@ LOGGER: Logger = getLogger(__package__)
 
 CONF_ADDRESS="address"
 CONF_DEVICE_ID="device_id"
+CONF_INTERVAL="update_interval"
+
+DEFAULT_INTERVAL = 5
 
 PLATFORMS: List[str] = [
     Platform.BINARY_SENSOR,

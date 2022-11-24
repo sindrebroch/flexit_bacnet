@@ -3,11 +3,20 @@ from datetime import timedelta
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config, HomeAssistant
+from homeassistant.const import CONF_NAME
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import DOMAIN, LOGGER, PLATFORMS, CONF_ADDRESS, CONF_DEVICE_ID
+from .const import (
+    DOMAIN, 
+    LOGGER, 
+    PLATFORMS, 
+    CONF_ADDRESS, 
+    CONF_DEVICE_ID,
+    CONF_INTERVAL,
+    DEFAULT_INTERVAL,
+)
 from .coordinator import FlexitDataUpdateCoordinator
 from .lib import FlexitBACnet
 
@@ -22,15 +31,27 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data.setdefault(DOMAIN, {})
         LOGGER.info("Flexit Bacnet startup")
 
-    device = FlexitBACnet(entry.data[CONF_ADDRESS], entry.data[CONF_DEVICE_ID])
+    if not entry.options:
+        hass.config_entries.async_update_entry(
+            entry,
+            options={
+                CONF_INTERVAL: entry.data.get(CONF_INTERVAL, DEFAULT_INTERVAL),
+            },
+        )
+
+    device = FlexitBACnet(
+        entry.data[CONF_ADDRESS], 
+        entry.data[CONF_DEVICE_ID]
+    )
     is_valid = await hass.async_add_executor_job(device.is_valid)
     if not is_valid:
         return False
 
     coordinator = FlexitDataUpdateCoordinator(
         hass,
-        name="Flexit Bacnet Test",
+        name=entry.data[CONF_NAME],
         device=device,
+        update_interval=entry.options.get(CONF_INTERVAL, DEFAULT_INTERVAL),
     )
 
     await coordinator.async_config_entry_first_refresh()

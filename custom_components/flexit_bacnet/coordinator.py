@@ -14,10 +14,11 @@ class FlexitDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching from Flexit data API."""
 
     def __init__(
-            self,
-            hass: HomeAssistant,
-            name: str,
-            device: FlexitBACnet
+        self,
+        hass: HomeAssistant,
+        name: str,
+        device: FlexitBACnet,
+        update_interval: int,
     ) -> None:
         """Initialize."""
 
@@ -35,7 +36,7 @@ class FlexitDataUpdateCoordinator(DataUpdateCoordinator):
             hass,
             LOGGER,
             name=DOMAIN,
-            update_interval=timedelta(minutes=5)
+            update_interval=timedelta(minutes=update_interval)
         )
 
     async def _async_update_data(self):
