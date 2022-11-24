@@ -1,0 +1,36 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Service is already configured"
+        },
+        "error": {
+            "cannot_connect": "Failed to connect"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "name": "Name",
+                    "address": "IP address",
+                    "device_id": "Device ID"
+                }
+            }
+        },
+        "flow_title": "Flexit Config"
+    },
+    "options": {
+        "flow_title": "Flexit Options",
+        "abort": {
+            "already_configured": "Service is already configured"
+        },
+        "error": {
+            "cannot_connect": "Failed to connect"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "update_interval": "Update interval in minutes"
+                }
+            }
+        }
+    }
+}

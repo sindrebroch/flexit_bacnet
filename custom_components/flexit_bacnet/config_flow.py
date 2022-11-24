@@ -3,7 +3,7 @@ from typing import Any, Dict, List
 import voluptuous as vol
 from voluptuous.schema_builder import Schema
 
-from homeassistant.config_entries import ConfigFlow
+from homeassistant.config_entries import ConfigFlow, OptionsFlow
 from homeassistant.const import CONF_NAME
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
@@ -61,7 +61,7 @@ class FlexitOptionsFlowHandler(OptionsFlow):
         self.config_entry = config_entry
 
     async def async_step_init(
-        self, 
+        self,
         user_input: Dict[str, Any] or None = None
     ) -> FlowResult:
         """Manage Flexit options."""
