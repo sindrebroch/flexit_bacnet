@@ -29,6 +29,9 @@ class FlexitBACnet:
 
         self._state = bacnet.read_multiple(self.device_address, device_properties)
 
+    def disconnect(self):
+        bacnet.disconnect()
+
     def _get_value(self, device_property: DeviceProperty, value_name: str | None = None) -> Any:
         if self._state is None:
             self.refresh()
