@@ -65,7 +65,8 @@ async def async_unload_entry(hass, entry):
     """Unload entry."""
 
     coordinator = hass.data[DOMAIN][entry.entry_id]
-    coordinator.device.disconnect()
+
+    await hass.async_add_executor_job(coordinator.device.disconnect)
 
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 

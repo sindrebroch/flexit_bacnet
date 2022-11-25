@@ -30,7 +30,7 @@ class FlexitBACnet:
         self._state = bacnet.read_multiple(self.device_address, device_properties)
 
     def disconnect(self):
-        bacnet.disconnect()
+        bacnet.disconnect(self.device_address)
 
     def _get_value(self, device_property: DeviceProperty, value_name: str | None = None) -> Any:
         if self._state is None:
@@ -116,10 +116,10 @@ class FlexitBACnet:
 
     def set_ventilation_mode(self, mode: int):
         """Set ventilation mode to one of the supported values:
-         1 - Stop (VENTILATION_MODE.STOP)
-         2 - Away (VENTILATION_MODE.AWAY)
-         3 - Home (VENTILATION_MODE.HOME)
-         4 - High (VENTILATION_MODE.HIGH)
+        1 - Stop (VENTILATION_MODE.STOP)
+        2 - Away (VENTILATION_MODE.AWAY)
+        3 - Home (VENTILATION_MODE.HOME)
+        4 - High (VENTILATION_MODE.HIGH)
         """
         self._set_value(VENTILATION_MODE, mode)
 

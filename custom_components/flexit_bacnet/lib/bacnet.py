@@ -34,6 +34,10 @@ def run_bacnet(device_address: str) -> Lite:
     finally:
         bacnet_lite.disconnect()
 
+def disconnect(device_address: str):
+    with run_bacnet(device_address) as bacnet:
+        bacnet.disconnect()
+
 
 def read_multiple(device_address: str, device_properties: List[DeviceProperty]) -> DeviceState:
     request = {
