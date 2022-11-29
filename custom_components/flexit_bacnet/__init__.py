@@ -64,14 +64,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def async_unload_entry(hass, entry):
     """Unload entry."""
 
-    coordinator = hass.data[DOMAIN][entry.entry_id]
-
-    await hass.async_add_executor_job(coordinator.device.disconnect)
-
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
     if unload_ok:
-        hass.data[DOMAIN].pop(entry.entry_id)
+        await hass.async_add_executor_job(hass.data[DOMAIN][entry.entry_id].device.disconnect)
 
     return unload_ok
 

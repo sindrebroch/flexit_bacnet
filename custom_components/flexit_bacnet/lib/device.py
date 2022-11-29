@@ -11,6 +11,7 @@ class FlexitBACnet:
         self.device_address = device_address
         self.device_id = device_id
         self._state: DeviceState | None = None
+        self._available: bool = True
 
     def is_valid(self) -> bool:
         """Return True if device address and device ID point to a valid BACnet peer."""
@@ -27,7 +28,11 @@ class FlexitBACnet:
         """Refresh local device state."""
         device_properties = DEVICE_PROPERTIES + [self._device_property]
 
-        self._state = bacnet.read_multiple(self.device_address, device_properties)
+        try:
+            self._state = bacnet.read_multiple(self.device_address, device_properties)
+            self._available = True
+        except:
+            self._available = False
 
     def disconnect(self):
         bacnet.disconnect(self.device_address)
@@ -44,6 +49,10 @@ class FlexitBACnet:
     def _set_value(self, device_property: DeviceProperty, value: Any):
         bacnet.write(self.device_address, device_property, value)
         self.refresh()
+
+    @property
+    def available(self) -> bool:
+        return self._available
 
     @property
     def device_name(self) -> str:

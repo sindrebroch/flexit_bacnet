@@ -41,4 +41,5 @@ class FlexitDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         """Update data via library."""
+        LOGGER.info("coordinator updating data")
         self.device.refresh()

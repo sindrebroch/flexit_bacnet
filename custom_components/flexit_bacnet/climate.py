@@ -78,6 +78,11 @@ class FlexitClimateEntity(ClimateEntity):
         return f"Flexit Nordic: {self.coordinator.device.serial_number}"
 
     @property
+    def available(self) -> bool:
+        """Entity is available"""
+        return self.coordinator.device.available
+
+    @property
     def current_temperature(self) -> float:
         """Return the current temperature."""
         return float(self.coordinator.device.room_temperature)

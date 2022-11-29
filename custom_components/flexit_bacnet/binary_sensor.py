@@ -76,6 +76,11 @@ class FlexitFilterBinarySensor(FlexitBinarySensor):
         return "mdi:hvac" if self.is_on else "mdi:hvac-off"
 
     @property
+    def available(self) -> bool:
+        """Entity is available"""
+        return self.coordinator.device.available
+
+    @property
     def extra_state_attributes(self):
         """Return the state attributes."""
 

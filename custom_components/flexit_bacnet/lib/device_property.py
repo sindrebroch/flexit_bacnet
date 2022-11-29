@@ -4,8 +4,14 @@ PRESENT_VALUE = 'presentValue'
 
 
 class DeviceProperty:
-    def __init__(self, object_type: str, instance_id: int, value_map: dict[int, str] | None = None,
-                 read_values: list[str] | None = None, priority: int | None = None):
+    def __init__(
+        self, 
+        object_type: str, 
+        instance_id: int, 
+        value_map: dict[int, str] | None = None,
+        read_values: list[str] | None = None, 
+        priority: int | None = None
+    ):
         self.object_type = object_type
         self.instance_id = instance_id
         self.value_map = value_map

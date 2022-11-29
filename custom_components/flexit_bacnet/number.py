@@ -143,15 +143,6 @@ BOOST_DELAY = FlexitNumberEntityDescription(
     native_max_value=300.00,
     icon="mdi:timer",
 )
-AWAY_DELAY = FlexitNumberEntityDescription(
-    key="away_delay",
-    name="Away delay",
-    native_unit_of_measurement=TIME_MINUTES,
-    entity_category=EntityCategory.CONFIG,
-    native_min_value=0.0,
-    native_max_value=300.00,
-    icon="mdi:timer",
-)
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -173,7 +164,6 @@ async def async_setup_entry(
         FlexitSetpointFireSupplyNumber(coordinator, SETPOINT_FIRE_SUPPLY),
         FlexitSetpointCookerExtractNumber(coordinator, SETPOINT_COOKER_EXTRACT),
         FlexitSetpointCookerSupplyNumber(coordinator, SETPOINT_COOKER_SUPPLY),
-        FlexitAwayDelayNumber(coordinator, AWAY_DELAY),
         FlexitBoostDelayNumber(coordinator, BOOST_DELAY),
         FlexitFireplaceDelayNumber(coordinator, FIREPLACE_DELAY),
     ])
@@ -262,11 +252,6 @@ class FlexitSetpointCookerExtractNumber(FlexitNumber):
 class FlexitSetpointCookerSupplyNumber(FlexitNumber):
     async def async_set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_cooker(value)
-        self.update()
-
-class FlexitAwayDelayNumber(FlexitNumber):
-    async def async_set_native_value(self, value: float) -> None:
-        self.coordinator.device.set_away_delay(value)
         self.update()
 
 class FlexitBoostDelayNumber(FlexitNumber):

@@ -129,11 +129,11 @@ SENSORS = [
     ),
 
     SensorEntityDescription(
-        name="fireplace_ventilation_remaining_duration",
+        name="Fireplace ventilation remaining duration",
         key="fireplace_ventilation_remaining_duration",
     ),
     SensorEntityDescription(
-        name="rapid_ventilation_remaining_duration",
+        name="Rapid ventilation remaining duration",
         key="rapid_ventilation_remaining_duration",
     ),
 ]
