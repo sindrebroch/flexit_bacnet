@@ -1,4 +1,3 @@
-import asyncio
 from datetime import timedelta
 
 from homeassistant.config_entries import ConfigEntry
@@ -40,6 +39,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         )
 
     device = FlexitBACnet(
+        hass,
         entry.data[CONF_ADDRESS], 
         entry.data[CONF_DEVICE_ID]
     )
@@ -64,13 +64,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def async_unload_entry(hass, entry):
     """Unload entry."""
 
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
-
-    if unload_ok:
-        await hass.async_add_executor_job(hass.data[DOMAIN][entry.entry_id].device.disconnect)
-
-    return unload_ok
-
+    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Reload config entry."""

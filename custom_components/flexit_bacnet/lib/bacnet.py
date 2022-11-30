@@ -26,7 +26,7 @@ def get_local_ip(device_address: str) -> None | str:
         s.close()
 
 @contextmanager
-def run_bacnet(device_address: str) -> Lite:
+def run_bacnet(hass, device_address: str) -> Lite:
     """Return a running BACnet application to accept read and write requests."""
     LOGGER.info("Trying to run_bacnet")
 
@@ -35,16 +35,10 @@ def run_bacnet(device_address: str) -> Lite:
         yield bacnet_lite
     finally:
         LOGGER.info("run_bacnet finally")
-        bacnet_lite.disconnect()
+        await hass.async_add_executor_job(bacnet_lite.disconnect)
+        LOGGER.info("run_bacnet finally finished")
 
-def disconnect(device_address: str):
-    LOGGER.info("Trying to disconnect bacnet")
-    with run_bacnet(device_address) as bacnet:
-        bacnet.disconnect()
-        LOGGER.info("Have called bacnet.disconnect()")
-
-
-def read_multiple(device_address: str, device_properties: List[DeviceProperty]) -> DeviceState:
+def read_multiple(hass, device_address: str, device_properties: List[DeviceProperty]) -> DeviceState:
     LOGGER.info("Trying to read_multiple in bacnet")
     request = {
         'address': device_address,
@@ -56,7 +50,7 @@ def read_multiple(device_address: str, device_properties: List[DeviceProperty]) 
 
     result: DeviceState
 
-    with run_bacnet(device_address) as bacnet:
+    with run_bacnet(hass, device_address) as bacnet:
         try:
             result = bacnet.readMultiple(device_address, request)
         except:
@@ -68,9 +62,9 @@ def read_multiple(device_address: str, device_properties: List[DeviceProperty]) 
     return result
 
 
-def write(device_address: str, device_property: DeviceProperty, value: Any):
+def write(hass, device_address: str, device_property: DeviceProperty, value: Any):
     LOGGER.info("Trying to write in bacnet")
-    with run_bacnet(device_address) as bacnet:
+    with run_bacnet(hass, device_address) as bacnet:
         args = [
             device_address,
             device_property.object_type,

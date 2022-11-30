@@ -1,3 +1,4 @@
+import asyncio
 from typing import Any
 
 from . import bacnet
@@ -7,7 +8,8 @@ from .typing import DeviceState
 
 
 class FlexitBACnet:
-    def __init__(self, device_address: str, device_id: int):
+    def __init__(self, hass, device_address: str, device_id: int):
+        self.hass = hass
         self.device_address = device_address
         self.device_id = device_id
         self._state: DeviceState | None = None
@@ -29,13 +31,10 @@ class FlexitBACnet:
         device_properties = DEVICE_PROPERTIES + [self._device_property]
 
         try:
-            self._state = bacnet.read_multiple(self.device_address, device_properties)
+            self._state = bacnet.read_multiple(self.hass, self.device_address, device_properties)
             self._available = True
         except:
             self._available = False
-
-    def disconnect(self):
-        bacnet.disconnect(self.device_address)
 
     def _get_value(self, device_property: DeviceProperty, value_name: str | None = None) -> Any:
         if self._state is None:
@@ -47,7 +46,7 @@ class FlexitBACnet:
         return dict(self._state[device_property.object_identifier])[value_name]
 
     def _set_value(self, device_property: DeviceProperty, value: Any):
-        bacnet.write(self.device_address, device_property, value)
+        bacnet.write(self.hass, self.device_address, device_property, value)
         self.refresh()
 
     @property
