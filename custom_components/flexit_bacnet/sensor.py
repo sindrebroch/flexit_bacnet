@@ -166,6 +166,11 @@ class FlexitSensor(CoordinatorEntity, SensorEntity):
         self._attr_device_info = coordinator._attr_device_info
 
     @property
+    def available(self) -> bool:
+        """Entity is available"""
+        return self.coordinator.device.available
+
+    @property
     def native_value(self) -> StateType:
         sensor_data = self.coordinator.device.__getattribute__(self.entity_description.key)
         return cast(StateType, sensor_data)

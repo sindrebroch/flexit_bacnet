@@ -59,6 +59,11 @@ class FlexitButton(CoordinatorEntity, ButtonEntity):
         self._attr_unique_id = f"{description.key}"
         self._attr_device_info = coordinator._attr_device_info
 
+    @property
+    def available(self) -> bool:
+        """Entity is available"""
+        return self.coordinator.device.available
+
 class FlexitActivateCookerhoodButton(FlexitButton):
     async def async_press(self) -> None:
         self.coordinator.device.activate_cooker_hood()

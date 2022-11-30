@@ -66,6 +66,11 @@ class FlexitSwitch(CoordinatorEntity, SwitchEntity):
         self.coordinator.device.refresh()
 
     @property
+    def available(self) -> bool:
+        """Entity is available"""
+        return self.coordinator.device.available
+
+    @property
     def is_on(self) -> bool:
         """Return the state."""
         return self.coordinator.device.__getattribute__(self.entity_description.key)

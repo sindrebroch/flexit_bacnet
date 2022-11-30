@@ -198,6 +198,11 @@ class FlexitNumber(CoordinatorEntity, NumberEntity):
         self.coordinator.device.refresh()
 
     @property
+    def available(self) -> bool:
+        """Entity is available"""
+        return self.coordinator.device.available
+
+    @property
     def native_value(self) -> float:
         return self.coordinator.device.__getattribute__(
             self.entity_description.key
