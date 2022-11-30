@@ -21,7 +21,7 @@ from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN
+from .const import DOMAIN, LOGGER
 from .coordinator import FlexitDataUpdateCoordinator
 
 
@@ -193,9 +193,9 @@ class FlexitNumber(CoordinatorEntity, NumberEntity):
         self._attr_native_min_value = description.native_min_value or DEFAULT_MIN_VALUE
         self._attr_native_max_value = description.native_max_value or DEFAULT_MAX_VALUE
 
-    def update(self) -> None:
+    async def async_update(self) -> None:
         """Refresh unit state."""
-        self.coordinator.device.refresh()
+        await self.coordinator.device.refresh()
 
     @property
     def available(self) -> bool:
@@ -208,63 +208,62 @@ class FlexitNumber(CoordinatorEntity, NumberEntity):
             self.entity_description.key
         )
 
-
 class FlexitSetpointHomeExtractNumber(FlexitNumber):
     async def async_set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_extract_air_home(value)
-        self.update()
+        await self.async_update()
 
 class FlexitSetpointHomeSupplyNumber(FlexitNumber):
     async def async_set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_home(value)
-        self.update()
+        await self.async_update()
 
 class FlexitSetpointAwayExtractNumber(FlexitNumber):
     async def async_set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_away(value)
-        self.update()
+        await self.async_update()
 
 class FlexitSetpointAwaySupplyNumber(FlexitNumber):
     async def async_set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_away(value)
-        self.update()
+        await self.async_update()
 
 class FlexitSetpointHighExtractNumber(FlexitNumber):
     async def async_set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_high(value)
-        self.update()
+        await self.async_update()
 
 class FlexitSetpointHighSupplyNumber(FlexitNumber):
     async def async_set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_high(value)
-        self.update()
+        await self.async_update()
 
 class FlexitSetpointFireExtractNumber(FlexitNumber):
     async def async_set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_fire(value)
-        self.update()
+        await self.async_update()
 
 class FlexitSetpointFireSupplyNumber(FlexitNumber):
     async def async_set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_fire(value)
-        self.update()
+        await self.async_update()
 
 class FlexitSetpointCookerExtractNumber(FlexitNumber):
     async def async_set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_cooker(value)
-        self.update()
+        await self.async_update()
 
 class FlexitSetpointCookerSupplyNumber(FlexitNumber):
     async def async_set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_cooker(value)
-        self.update()
+        await self.async_update()
 
 class FlexitBoostDelayNumber(FlexitNumber):
     async def async_set_native_value(self, value: float) -> None:
         self.coordinator.device.set_rapid_ventilation_duration(value)
-        self.update()
+        await self.async_update()
 
 class FlexitFireplaceDelayNumber(FlexitNumber):
     async def async_set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fireplace_ventilation_duration(int(value))
-        self.update()
+        await self.async_update()

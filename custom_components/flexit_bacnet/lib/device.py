@@ -26,19 +26,19 @@ class FlexitBACnet:
     def _device_property(self) -> DeviceProperty:
         return DeviceProperty('device', self.device_id, read_values=['objectName', 'description'])
 
-    def refresh(self):
+    async def refresh(self):
         """Refresh local device state."""
         device_properties = DEVICE_PROPERTIES + [self._device_property]
 
         try:
-            self._state = bacnet.read_multiple(self.hass, self.device_address, device_properties)
+            self._state = await bacnet.read_multiple(self.hass, self.device_address, device_properties)
             self._available = True
         except:
             self._available = False
 
     def _get_value(self, device_property: DeviceProperty, value_name: str | None = None) -> Any:
         if self._state is None:
-            self.refresh()
+            asyncio.run_coroutine_threadsafe(self.refresh(), self.hass.loop)
 
         if value_name is None:
             value_name = PRESENT_VALUE
@@ -46,8 +46,8 @@ class FlexitBACnet:
         return dict(self._state[device_property.object_identifier])[value_name]
 
     def _set_value(self, device_property: DeviceProperty, value: Any):
-        bacnet.write(self.hass, self.device_address, device_property, value)
-        self.refresh()
+        asyncio.run_coroutine_threadsafe(bacnet.write(self.hass, self.device_address, device_property, value), self.hass.loop)
+        asyncio.run_coroutine_threadsafe(self.refresh(), self.hass.loop)
 
     @property
     def available(self) -> bool:
