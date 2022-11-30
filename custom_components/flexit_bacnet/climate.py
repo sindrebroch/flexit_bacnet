@@ -1,7 +1,7 @@
 """The Flexit Nordic (BACnet) integration."""
 from typing import Any
 
-from .lib import VENTILATION_MODE, FlexitBACnet
+from .lib import VENTILATION_MODE
 from .lib.nordic import VENTILATION_MODES
 
 from homeassistant.components.climate import (
