@@ -1,4 +1,5 @@
 import socket
+
 from typing import List, Any
 from logging import Logger, getLogger
 
@@ -11,7 +12,7 @@ from .typing import DeviceState
 
 LOGGER: Logger = getLogger(__package__)
 
-#BAC0.log_level('silence')
+BAC0.log_level('silence')
 
 def get_local_ip(device_address: str) -> None | str:
     """Get the local IP address used to connect to the remote one."""
@@ -54,9 +55,9 @@ async def read_multiple(hass, device_address: str, device_properties: List[Devic
 
     async with run_bacnet(hass, device_address) as bacnet:
         try:
-            result = await hass.async_add_executor_job(bacnet.readMultiple(device_address, request))
-        except:
-            LOGGER.info("error on readMultiple")
+            result = await hass.async_add_executor_job(bacnet.readMultiple, device_address, request)
+        except Exception as e: 
+            LOGGER.info("Error on bacnet.readMultiple, %s", e)
 
     if result == ['']:
         raise ConnectionError
@@ -79,6 +80,6 @@ async def write(hass, device_address: str, device_property: DeviceProperty, valu
             args += [f'- {device_property.priority}']
 
         try:
-            await hass.async_add_executor_job(bacnet.write(" ".join(map(lambda arg: str(arg), args))))
-        except:
-            LOGGER.info("error onwrite")
+            await hass.async_add_executor_job(bacnet.write, " ".join(map(lambda arg: str(arg), args)) )
+        except Exception as e:
+            LOGGER.info("Error on bacnet.write, %s", e)

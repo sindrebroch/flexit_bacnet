@@ -1,11 +1,14 @@
 import asyncio
+
 from typing import Any
+from logging import Logger, getLogger
 
 from . import bacnet
 from .device_property import PRESENT_VALUE
 from .nordic import *
 from .typing import DeviceState
 
+LOGGER: Logger = getLogger(__package__)
 
 class FlexitBACnet:
     def __init__(self, hass, device_address: str, device_id: int):
@@ -14,6 +17,7 @@ class FlexitBACnet:
         self.device_id = device_id
         self._state: DeviceState | None = None
         self._available: bool = True
+        self._refreshing: bool = False
 
     def is_valid(self) -> bool:
         """Return True if device address and device ID point to a valid BACnet peer."""
@@ -31,14 +35,19 @@ class FlexitBACnet:
         device_properties = DEVICE_PROPERTIES + [self._device_property]
 
         try:
-            self._state = await bacnet.read_multiple(self.hass, self.device_address, device_properties)
-            self._available = True
+            if self._refreshing == False:
+                self._refreshing = True
+                self._state = await bacnet.read_multiple(self.hass, self.device_address, device_properties)
         except:
             self._available = False
+        else:
+            self._available = True
+        finally:
+            self._refreshing = False
 
     def _get_value(self, device_property: DeviceProperty, value_name: str | None = None) -> Any:
         if self._state is None:
-            asyncio.run_coroutine_threadsafe(self.refresh(), self.hass.loop)
+            return 'unavailable'
 
         if value_name is None:
             value_name = PRESENT_VALUE

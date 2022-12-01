@@ -42,4 +42,10 @@ class FlexitDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Update data via library."""
         LOGGER.info("coordinator updating data")
-        self.device.refresh()
+        
+        try:
+            await self.device.refresh()
+            return self.device._state
+        except Exception as error:
+            LOGGER.error("Update error %s", error)
+            raise UpdateFailed(error) from error
