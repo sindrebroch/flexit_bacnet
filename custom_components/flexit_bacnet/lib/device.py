@@ -63,8 +63,6 @@ class FlexitBACnet:
     def _set_value(self, device_property: DeviceProperty, value: Any):
         LOGGER.debug("Setting value %s %s", device_property.object_identifier, value)
         asyncio.run_coroutine_threadsafe(self._async_write(device_property, value), self.hass.loop)
-        if self._state is not None:
-            self._state[device_property.object_identifier] = [(PRESENT_VALUE, value)]
 
     async def _async_write(self, device_property: DeviceProperty, value: Any):
         try:
@@ -72,6 +70,9 @@ class FlexitBACnet:
             await bacnet.write(self.hass, self.device_address, device_property, value), self.hass.loop
         except Exception as e:
             LOGGER.warning("Write error %s", e)
+        else:
+            if self._state is not None:
+                self._state[device_property.object_identifier] = [(PRESENT_VALUE, value)]
         finally:
             self._writing = False
 
