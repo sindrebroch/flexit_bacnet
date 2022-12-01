@@ -5,6 +5,8 @@
 
 This library allows integration with Flexit Nordic series of air handling units via BACnet protocol.
 
+Use at your own risk.
+
 ## WIP Disclaimer
 
 This is currencly very much a work in progress. I'm having a bunch of issues with the BAC0 library being sync and blocking the event-loop. It also crashes after a few hours, and makes the system work a lot harder when retrying. Currently trying to figure out how this could be solved.
