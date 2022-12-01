@@ -34,7 +34,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.config_entries.async_update_entry(
             entry,
             options={
-                CONF_INTERVAL: entry.data.get(CONF_INTERVAL, DEFAULT_INTERVAL),
+                CONF_INTERVAL: DEFAULT_INTERVAL,
             },
         )
 
@@ -51,7 +51,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass,
         name=entry.data[CONF_NAME],
         device=device,
-        update_interval=entry.options.get(CONF_INTERVAL, DEFAULT_INTERVAL),
+        update_interval=entry.options[CONF_INTERVAL],
     )
 
     await coordinator.async_config_entry_first_refresh()

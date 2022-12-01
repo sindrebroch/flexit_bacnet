@@ -18,6 +18,7 @@ class FlexitBACnet:
         self._state: DeviceState | None = None
         self._available: bool = True
         self._refreshing: bool = False
+        self._writing: bool = False
 
     def is_valid(self) -> bool:
         """Return True if device address and device ID point to a valid BACnet peer."""
@@ -36,7 +37,7 @@ class FlexitBACnet:
 
         try:
             LOGGER.debug("bacnet device refresh()")
-            if self._refreshing == False:
+            if self._refreshing == False and self._writing == False:
                 LOGGER.debug("Not already refreshing")
                 self._refreshing = True
                 self._state = await bacnet.read_multiple(self.hass, self.device_address, device_properties)
@@ -61,9 +62,18 @@ class FlexitBACnet:
 
     def _set_value(self, device_property: DeviceProperty, value: Any):
         LOGGER.debug("Setting value %s %s", device_property.object_identifier, value)
-        asyncio.run_coroutine_threadsafe(bacnet.write(self.hass, self.device_address, device_property, value), self.hass.loop)
+        asyncio.run_coroutine_threadsafe(async_write(device_property, value), self.hass.loop)
         if self._state is not None:
             self._state[device_property.object_identifier] = [(PRESENT_VALUE, value)]
+
+    async def async_write(self, device_property: DeviceProperty, value: Any):
+        try:
+            self._writing = True
+            await bacnet.write(self.hass, self.device_address, device_property, value), self.hass.loop
+        except Exception as e:
+            LOGGER.warning("Write error %s", e)
+        finally:
+            self._writing = False
 
     @property
     def available(self) -> bool:

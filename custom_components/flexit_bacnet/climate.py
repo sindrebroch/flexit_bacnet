@@ -18,6 +18,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 from .coordinator import FlexitDataUpdateCoordinator
@@ -32,7 +33,7 @@ async def async_setup_entry(
     async_add_entities([FlexitClimateEntity(coordinator)])
 
 
-class FlexitClimateEntity(ClimateEntity):
+class FlexitClimateEntity(CoordinatorEntity, ClimateEntity):
     """Flexit air handling unit."""
 
     coordinator: FlexitDataUpdateCoordinator
@@ -65,6 +66,8 @@ class FlexitClimateEntity(ClimateEntity):
         coordinator: FlexitDataUpdateCoordinator,
     ) -> None:
         """Initialize the unit."""
+
+        super().__init__(coordinator)
         self.coordinator = coordinator
         self._attr_unique_id = f"{DOMAIN}.{self.coordinator.device.serial_number}"
         self._attr_device_info = coordinator._attr_device_info

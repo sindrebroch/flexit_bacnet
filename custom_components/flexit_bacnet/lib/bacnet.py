@@ -31,18 +31,19 @@ def get_local_ip(device_address: str) -> None | str:
 @asynccontextmanager
 async def run_bacnet(hass, device_address: str) -> Lite:
     """Return a running BACnet application to accept read and write requests."""
-    LOGGER.info("Trying to run_bacnet")
-
-    local_ip = get_local_ip(device_address)
-    bacnet_lite = await hass.async_add_executor_job(BAC0.lite, local_ip, None, None, None, 0, None, True)
+    LOGGER.debug("Trying to run_bacnet")
 
     try:
+        local_ip = await hass.async_add_executor_job(get_local_ip, device_address)
+        bacnet_lite = await hass.async_add_executor_job(BAC0.lite, local_ip, None, None, None, 0, None, True)
         yield bacnet_lite
     except Exception as e:
         LOGGER.warning("run_bacnet exception %s", e)
     finally:
-        await hass.async_add_executor_job(bacnet_lite.disconnect)
-        LOGGER.info("run_bacnet finally finished")
+        if bacnet_lite is not None:
+            LOGGER.debug("run_bacnet finally disconnect")
+            await hass.async_add_executor_job(bacnet_lite.disconnect)
+        LOGGER.debug("run_bacnet finally finished")
 
 async def read_multiple(hass, device_address: str, device_properties: List[DeviceProperty]) -> DeviceState:
     LOGGER.info("Trying to read_multiple in bacnet")
