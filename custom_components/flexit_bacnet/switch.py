@@ -79,20 +79,20 @@ class FlexitComfortSwitch(FlexitSwitch):
     def turn_on(self, **kwargs: Any) -> None:
         """Turn the entity on."""
         self.coordinator.device.activate_comfort_button()
-        self.update()
+        self.schedule_update_ha_state()
 
     def turn_off(self, **kwargs: Any) -> None:
         """Turn the entity off."""
         self.coordinator.device.deactivate_comfort_button()
-        self.update()
+        self.schedule_update_ha_state()
 
 class FlexitCalendarOverrideSwitch(FlexitSwitch):
     def turn_on(self, **kwargs: Any) -> None:
         """Turn the entity on."""
         self.coordinator.device.activate_schedule_override()
-        self.update()
+        self.schedule_update_ha_state()
 
     def turn_off(self, **kwargs: Any) -> None:
         """Turn the entity off."""
         self.coordinator.device.deactivate_schedule_override()
-        self.update()
+        self.schedule_update_ha_state()

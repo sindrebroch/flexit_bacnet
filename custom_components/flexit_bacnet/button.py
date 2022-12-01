@@ -39,7 +39,6 @@ async def async_setup_entry(
         ]
     )
 
-
 class FlexitButton(CoordinatorEntity, ButtonEntity):
     """Define a Flexit entity."""
 
@@ -65,9 +64,9 @@ class FlexitButton(CoordinatorEntity, ButtonEntity):
         return self.coordinator.device.available
 
 class FlexitActivateCookerhoodButton(FlexitButton):
-    async def async_press(self) -> None:
+    def press(self) -> None:
         self.coordinator.device.activate_cooker_hood()
 
 class FlexitDeactivateCookerhoodButton(FlexitButton):
-    async def async_press(self) -> None:
+    def press(self) -> None:
         self.coordinator.device.deactivate_cooker_hood()

@@ -33,11 +33,14 @@ async def run_bacnet(hass, device_address: str) -> Lite:
     """Return a running BACnet application to accept read and write requests."""
     LOGGER.info("Trying to run_bacnet")
 
+    local_ip = get_local_ip(device_address)
+    bacnet_lite = await hass.async_add_executor_job(BAC0.lite, local_ip, None, None, None, 0, None, True)
+
     try:
-        bacnet_lite = BAC0.lite(ip=get_local_ip(device_address), ping=False)
         yield bacnet_lite
+    except Exception as e:
+        LOGGER.warning("run_bacnet exception %s", e)
     finally:
-        LOGGER.info("run_bacnet finally")
         await hass.async_add_executor_job(bacnet_lite.disconnect)
         LOGGER.info("run_bacnet finally finished")
 
@@ -56,8 +59,9 @@ async def read_multiple(hass, device_address: str, device_properties: List[Devic
     async with run_bacnet(hass, device_address) as bacnet:
         try:
             result = await hass.async_add_executor_job(bacnet.readMultiple, device_address, request)
+            LOGGER.debug("response from read %s", result)
         except Exception as e: 
-            LOGGER.info("Error on bacnet.readMultiple, %s", e)
+            LOGGER.warning("Error on bacnet.readMultiple, %s", e)
 
     if result == ['']:
         raise ConnectionError
@@ -66,7 +70,7 @@ async def read_multiple(hass, device_address: str, device_properties: List[Devic
 
 
 async def write(hass, device_address: str, device_property: DeviceProperty, value: Any):
-    LOGGER.info("Trying to write in bacnet")
+    LOGGER.debug("Trying to write in bacnet")
     async with run_bacnet(hass, device_address) as bacnet:
         args = [
             device_address,
@@ -80,6 +84,7 @@ async def write(hass, device_address: str, device_property: DeviceProperty, valu
             args += [f'- {device_property.priority}']
 
         try:
-            await hass.async_add_executor_job(bacnet.write, " ".join(map(lambda arg: str(arg), args)) )
+            LOGGER.debug("bacnet.write %s", args)
+            result = await hass.async_add_executor_job(bacnet.write, " ".join(map(lambda arg: str(arg), args)) )            
         except Exception as e:
-            LOGGER.info("Error on bacnet.write, %s", e)
+            LOGGER.warning("Error on bacnet.write, %s", e)

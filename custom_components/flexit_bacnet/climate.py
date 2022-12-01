@@ -1,4 +1,5 @@
 """The Flexit Nordic (BACnet) integration."""
+
 from typing import Any
 
 from .lib import VENTILATION_MODE
@@ -68,10 +69,6 @@ class FlexitClimateEntity(ClimateEntity):
         self._attr_unique_id = f"{DOMAIN}.{self.coordinator.device.serial_number}"
         self._attr_device_info = coordinator._attr_device_info
 
-    def update(self) -> None:
-        """Refresh unit state."""
-        self.coordinator.device.refresh()
-
     @property
     def name(self) -> str:
         """Name of the entity."""
@@ -92,19 +89,17 @@ class FlexitClimateEntity(ClimateEntity):
         """Return the temperature we try to reach."""
         if self.coordinator.device.ventilation_mode == VENTILATION_MODES[VENTILATION_MODE.AWAY]:
             return float(self.coordinator.device.air_temp_setpoint_away)
-
         return float(self.coordinator.device.air_temp_setpoint_home)
 
     def set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
         if (temperature := kwargs.get(ATTR_TEMPERATURE)) is None:
             return
-
         if self.coordinator.device.ventilation_mode == VENTILATION_MODES[VENTILATION_MODE.AWAY]:
             self.coordinator.device.set_air_temp_setpoint_away(temperature)
         else:
             self.coordinator.device.set_air_temp_setpoint_home(temperature)
-        self.update()
+        self.schedule_update_ha_state()
 
     @property
     def preset_mode(self) -> str:
@@ -128,7 +123,7 @@ class FlexitClimateEntity(ClimateEntity):
         }[preset_mode]
 
         self.coordinator.device.set_ventilation_mode(ventilation_mode)
-        self.update()
+        self.schedule_update_ha_state()
 
     @property
     def hvac_mode(self) -> HVACMode:
@@ -152,7 +147,7 @@ class FlexitClimateEntity(ClimateEntity):
             self.turn_aux_heat_on()
         else:
             self.turn_aux_heat_off()
-        self.update()
+        self.schedule_update_ha_state()
 
     @property
     def is_aux_heat(self) -> bool:
@@ -164,9 +159,9 @@ class FlexitClimateEntity(ClimateEntity):
     def turn_aux_heat_on(self) -> None:
         """Turn auxiliary heater on."""
         self.coordinator.device.enable_electric_heater()
-        self.update()
+        self.schedule_update_ha_state()
 
     def turn_aux_heat_off(self) -> None:
         """Turn auxiliary heater off."""
         self.coordinator.device.disable_electric_heater()
-        self.update()
+        self.schedule_update_ha_state()
