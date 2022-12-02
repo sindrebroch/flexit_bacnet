@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import time
+
 from dataclasses import dataclass
 from typing import Any, Tuple, Literal
 
@@ -193,6 +195,11 @@ class FlexitNumber(CoordinatorEntity, NumberEntity):
         self._attr_native_min_value = description.native_min_value or DEFAULT_MIN_VALUE
         self._attr_native_max_value = description.native_max_value or DEFAULT_MAX_VALUE
 
+    def _update(self) -> None:
+        """Refresh unit state."""
+        time.sleep(1)
+        self.schedule_update_ha_state()
+
     @property
     def available(self) -> bool:
         """Entity is available"""
@@ -207,59 +214,59 @@ class FlexitNumber(CoordinatorEntity, NumberEntity):
 class FlexitSetpointHomeExtractNumber(FlexitNumber):
     def set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_extract_air_home(value)
-        self.schedule_update_ha_state()
+        self._update()
 
 class FlexitSetpointHomeSupplyNumber(FlexitNumber):
     def set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_home(value)
-        self.schedule_update_ha_state()
+        self._update()
 
 class FlexitSetpointAwayExtractNumber(FlexitNumber):
     def set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_away(value)
-        self.schedule_update_ha_state()
+        self._update()
 
 class FlexitSetpointAwaySupplyNumber(FlexitNumber):
     def set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_away(value)
-        self.schedule_update_ha_state()
+        self._update()
 
 class FlexitSetpointHighExtractNumber(FlexitNumber):
     def set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_high(value)
-        self.schedule_update_ha_state()
+        self._update()
 
 class FlexitSetpointHighSupplyNumber(FlexitNumber):
     def set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_high(value)
-        self.schedule_update_ha_state()
+        self._update()
 
 class FlexitSetpointFireExtractNumber(FlexitNumber):
     def set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_fire(value)
-        self.schedule_update_ha_state()
+        self._update()
 
 class FlexitSetpointFireSupplyNumber(FlexitNumber):
     def set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_fire(value)
-        self.schedule_update_ha_state()
+        self._update()
 
 class FlexitSetpointCookerExtractNumber(FlexitNumber):
     def set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_cooker(value)
-        self.schedule_update_ha_state()
+        self._update()
 
 class FlexitSetpointCookerSupplyNumber(FlexitNumber):
     def set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fan_setpoint_supply_air_cooker(value)
-        self.schedule_update_ha_state()
+        self._update()
 
 class FlexitBoostDelayNumber(FlexitNumber):
     def set_native_value(self, value: float) -> None:
         self.coordinator.device.set_rapid_ventilation_duration(value)
-        self.schedule_update_ha_state()
+        self._update()
 
 class FlexitFireplaceDelayNumber(FlexitNumber):
     def set_native_value(self, value: float) -> None:
         self.coordinator.device.set_fireplace_ventilation_duration(int(value))
-        self.schedule_update_ha_state()
+        self._update()

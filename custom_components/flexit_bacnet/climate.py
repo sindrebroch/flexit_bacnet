@@ -1,5 +1,9 @@
 """The Flexit Nordic (BACnet) integration."""
 
+from __future__ import annotations
+
+import time
+
 from typing import Any
 
 from .lib import VENTILATION_MODE
@@ -32,7 +36,7 @@ async def async_setup_entry(
     coordinator: FlexitDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_entities([FlexitClimateEntity(coordinator)])
 
-
+@dataclass
 class FlexitClimateEntity(CoordinatorEntity, ClimateEntity):
     """Flexit air handling unit."""
 
@@ -72,6 +76,11 @@ class FlexitClimateEntity(CoordinatorEntity, ClimateEntity):
         self._attr_unique_id = f"{DOMAIN}.{self.coordinator.device.serial_number}"
         self._attr_device_info = coordinator._attr_device_info
 
+    def _update(self) -> None:
+        """Refresh unit state."""
+        time.sleep(1)
+        self.schedule_update_ha_state()
+
     @property
     def name(self) -> str:
         """Name of the entity."""
@@ -102,7 +111,7 @@ class FlexitClimateEntity(CoordinatorEntity, ClimateEntity):
             self.coordinator.device.set_air_temp_setpoint_away(temperature)
         else:
             self.coordinator.device.set_air_temp_setpoint_home(temperature)
-        self.schedule_update_ha_state()
+        self._update()
 
     @property
     def preset_mode(self) -> str:
@@ -126,7 +135,7 @@ class FlexitClimateEntity(CoordinatorEntity, ClimateEntity):
         }[preset_mode]
 
         self.coordinator.device.set_ventilation_mode(ventilation_mode)
-        self.schedule_update_ha_state()
+        self._update()
 
     @property
     def hvac_mode(self) -> HVACMode:
@@ -150,7 +159,7 @@ class FlexitClimateEntity(CoordinatorEntity, ClimateEntity):
             self.turn_aux_heat_on()
         else:
             self.turn_aux_heat_off()
-        self.schedule_update_ha_state()
+        self._update()
 
     @property
     def is_aux_heat(self) -> bool:
@@ -162,9 +171,9 @@ class FlexitClimateEntity(CoordinatorEntity, ClimateEntity):
     def turn_aux_heat_on(self) -> None:
         """Turn auxiliary heater on."""
         self.coordinator.device.enable_electric_heater()
-        self.schedule_update_ha_state()
+        self._update()
 
     def turn_aux_heat_off(self) -> None:
         """Turn auxiliary heater off."""
         self.coordinator.device.disable_electric_heater()
-        self.schedule_update_ha_state()
+        self._update()

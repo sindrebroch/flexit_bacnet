@@ -1,6 +1,7 @@
 """Switch platform for Flexit."""
 
 from __future__ import annotations
+
 import time
 
 from typing import Any, Tuple
@@ -61,9 +62,10 @@ class FlexitSwitch(CoordinatorEntity, SwitchEntity):
         self._attr_unique_id = f"{description.key}"
         self._attr_device_info = coordinator._attr_device_info
 
-    def update(self) -> None:
+    def _update(self) -> None:
         """Refresh unit state."""
-        self.coordinator.device.refresh()
+        time.sleep(1)
+        self.schedule_update_ha_state()
 
     @property
     def available(self) -> bool:
@@ -79,20 +81,20 @@ class FlexitComfortSwitch(FlexitSwitch):
     def turn_on(self, **kwargs: Any) -> None:
         """Turn the entity on."""
         self.coordinator.device.activate_comfort_button()
-        self.schedule_update_ha_state()
+        self._update()
 
     def turn_off(self, **kwargs: Any) -> None:
         """Turn the entity off."""
         self.coordinator.device.deactivate_comfort_button()
-        self.schedule_update_ha_state()
+        self._update()
 
 class FlexitCalendarOverrideSwitch(FlexitSwitch):
     def turn_on(self, **kwargs: Any) -> None:
         """Turn the entity on."""
         self.coordinator.device.activate_schedule_override()
-        self.schedule_update_ha_state()
+        self._update()
 
     def turn_off(self, **kwargs: Any) -> None:
         """Turn the entity off."""
         self.coordinator.device.deactivate_schedule_override()
-        self.schedule_update_ha_state()
+        self._update()
