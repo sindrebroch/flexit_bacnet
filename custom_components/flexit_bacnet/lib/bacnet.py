@@ -1,5 +1,6 @@
 import socket
 import asyncio
+import async_timeout
 
 from typing import List, Any
 from logging import Logger, getLogger
@@ -45,7 +46,7 @@ async def run_bacnet(hass, device_address: str) -> Lite:
     try:
         LOGGER.debug("Get local_ip")
         local_ip = await hass.async_add_executor_job(get_local_ip, device_address)
-        async with asyncio.timeout(10):
+        async with async_timeout.timeout(10):
             LOGGER.debug("Get bacnet_lite")
             bacnet_lite = await hass.async_add_executor_job(BAC0.lite, local_ip, None, None, None, 0, None, True)
         LOGGER.debug("Yield bacnet_lite")
