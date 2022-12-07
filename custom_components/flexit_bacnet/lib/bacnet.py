@@ -1,4 +1,5 @@
 import socket
+import asyncio
 
 from typing import List, Any
 from logging import Logger, getLogger
@@ -19,13 +20,21 @@ def get_local_ip(device_address: str) -> None | str:
     LOGGER.info("Trying to get_local_ip in bacnet")
 
     try:
+        LOGGER.debug("Try socket")
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        LOGGER.debug("Try socket 2")
         s.connect((device_address, 0))
-    except socket.error:
+        LOGGER.debug("Try socket 3")
+    except socket.error as e:
+        LOGGER.warning("Socket error %s", e)
         return None
+    except Exception as e:
+        LOGGER.warning("Socket exception %s", e)
     else:
+        LOGGER.debug("Socket return")
         return s.getsockname()[0]
     finally:
+        LOGGER.debug("Socket close")
         s.close()
 
 @asynccontextmanager
@@ -34,9 +43,15 @@ async def run_bacnet(hass, device_address: str) -> Lite:
     LOGGER.debug("Trying to run_bacnet")
 
     try:
+        LOGGER.debug("Get local_ip")
         local_ip = await hass.async_add_executor_job(get_local_ip, device_address)
-        bacnet_lite = await hass.async_add_executor_job(BAC0.lite, local_ip, None, None, None, 0, None, True)
+        async with asyncio.timeout(10):
+            LOGGER.debug("Get bacnet_lite")
+            bacnet_lite = await hass.async_add_executor_job(BAC0.lite, local_ip, None, None, None, 0, None, True)
+        LOGGER.debug("Yield bacnet_lite")
         yield bacnet_lite
+    except TimeoutError as e:
+        LOGGER.warning("run_bacnet timeout error %s", e)
     except Exception as e:
         LOGGER.warning("run_bacnet exception %s", e)
     finally:
