@@ -28,7 +28,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up this integration using UI."""
     if hass.data.get(DOMAIN) is None:
         hass.data.setdefault(DOMAIN, {})
-        LOGGER.info("Flexit Bacnet startup")
+        LOGGER.debug("Flexit Bacnet startup")
 
     if not entry.options:
         hass.config_entries.async_update_entry(

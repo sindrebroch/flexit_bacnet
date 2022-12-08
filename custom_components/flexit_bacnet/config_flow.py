@@ -24,7 +24,6 @@ class FlexitFlowHandler(ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
-
     async def async_step_user(
         self,
         user_input: Dict[str, Any] or None = None,
@@ -53,6 +52,7 @@ class FlexitFlowHandler(ConfigFlow, domain=DOMAIN):
         """Get the options flow for this handler."""
         return FlexitOptionsFlowHandler(config_entry)
 
+
 class FlexitOptionsFlowHandler(OptionsFlow):
     """Handle Flexit client options."""
 
@@ -67,8 +67,11 @@ class FlexitOptionsFlowHandler(OptionsFlow):
         """Manage Flexit options."""
 
         if user_input is not None:
-            return self.async_create_entry(title="Options", data=user_input)
-
+            return self.async_create_entry(
+                title="Options", 
+                data=user_input,
+            )
+        
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(

@@ -10,7 +10,6 @@
     "@sindrebroch"
   ],
   "requirements": [
-    "BAC0==22.9.21",
-    "async_property"
+    "BAC0==22.9.21"
   ]
 }

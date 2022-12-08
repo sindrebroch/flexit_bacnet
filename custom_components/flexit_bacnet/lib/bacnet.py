@@ -18,7 +18,7 @@ BAC0.log_level('silence')
 
 def get_local_ip(device_address: str) -> None | str:
     """Get the local IP address used to connect to the remote one."""
-    LOGGER.info("Trying to get_local_ip in bacnet")
+    LOGGER.debug("Trying to get_local_ip in bacnet")
 
     try:
         LOGGER.debug("Try socket")
@@ -51,7 +51,7 @@ async def run_bacnet(hass, device_address: str) -> Lite:
             bacnet_lite = await hass.async_add_executor_job(BAC0.lite, local_ip, None, None, None, 0, None, True)
         LOGGER.debug("Yield bacnet_lite")
         yield bacnet_lite
-    except TimeoutError as e:
+    except asyncio.TimeoutError as e:
         LOGGER.warning("run_bacnet timeout error %s", e)
     except Exception as e:
         LOGGER.warning("run_bacnet exception %s", e)
@@ -62,7 +62,7 @@ async def run_bacnet(hass, device_address: str) -> Lite:
         LOGGER.debug("run_bacnet finally finished")
 
 async def read_multiple(hass, device_address: str, device_properties: List[DeviceProperty]) -> DeviceState:
-    LOGGER.info("Trying to read_multiple in bacnet")
+    LOGGER.debug("Trying to read_multiple in bacnet")
     request = {
         'address': device_address,
         'objects': {

@@ -390,11 +390,9 @@ class FlexitBACnet:
     @property
     def air_filter_polluted(self) -> bool:
         """Returns True if filter is polluted."""
-        return self._get_value(AIR_FILTER_POLLUTED) == AIR_FILTER_POLLUTED.ACTIVE
-
-    def reset_air_filter_timer(self):
-        """Resets air filter replace timer."""
-        self._set_value(AIR_FILTER_REPLACE_TIMER_RESET, AIR_FILTER_REPLACE_TIMER_RESET.TRIGGER)
+        operating_time = self.air_filter_operating_time()
+        exchange_time = self.air_filter_exchange_interval()
+        return (exchange_time - operating_time) <= 0
 
     @property
     def scheduler_override(self) -> bool:
@@ -413,7 +411,3 @@ class FlexitBACnet:
     def away_delay(self) -> bool:
         """Returns delay for away-mode."""
         return self._get_value(DELAY_FOR_AWAY_ACTIVE)
-
-    def set_away_delay(self, minutes: int) -> bool:
-        """Sets delay for away-mode."""
-        self._set_value(DELAY_FOR_AWAY_ACTIVE, minutes)
