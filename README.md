@@ -5,13 +5,9 @@
 
 This library allows integration with Flexit Nordic series of air handling units via BACnet protocol.
 
-Use at your own risk.
+Work in progress.Use at your own risk.
 
-## WIP Disclaimer
-
-This is currencly very much a work in progress. I'm having a bunch of issues with the BAC0 library being sync and blocking the event-loop. It also crashes after a few hours, and makes the system work a lot harder when retrying. Currently trying to figure out how this could be solved.
-
-It is based on the awesome work of getting an official Flexit BACnet integration in HA core [here](https://github.com/home-assistant/core/pull/79652). To experiment and try to expand upon the existing work I created a custom integration.
+This custom integration is based on the awesome work of the official "Flexit BACnet"-integration from the PR to HA core [here](https://github.com/home-assistant/core/pull/79652). I have extracted the library into the custom_component to experiment and try to expand upon the existing work. Among other changes this integration tries to add async where possible, to avoid blocking the event-loop, but it is difficult since the underlying library BAC0 is not async.
 
 ## Prerequisites
 
