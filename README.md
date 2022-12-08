@@ -58,6 +58,7 @@ In order to use that library, you need to know the IP address and Device ID of y
   - Fan only
   - Heat
   - Off
+- Aux heat on / off
 - Viewable modes:
   - Home
   - Away
@@ -70,10 +71,10 @@ In order to use that library, you need to know the IP address and Device ID of y
 - Heat exchanger efficiency
 - Heat exchanger speed
 
-- Fan Control Signal Extract
-- Fan Control Signal Supply
-- Fan Speed Extract
-- Fan Speed Supply
+- Extract Fan Control Signal
+- Extract Fan Speed
+- Supply Fan Control Signal
+- Supply Fan Speed
 
 - Temperature Extract
 - Temperature Exhaust
@@ -81,17 +82,22 @@ In order to use that library, you need to know the IP address and Device ID of y
 - Temperature Supply
 - Temperature Room
 
-- Fan setpoint for all modes
-- Fireplace remaining
-- Rapid ventilation remaining
+- Fireplace remaining duration
+- Rapid ventilation remaining duration
 
-- Scheduler override
 - Mode operation
 - Mode ventilation
+
+### Number-entities
+
+- Extract / Supply Fan setpoint for all modes
+- Fireplace remaining duration
+- Rapid ventilation remaining duration
 
 ### Switch-entities
 
 - Comfort button
+- Scheduler override
 
 ### Binary sensor-entities
 
@@ -103,6 +109,10 @@ In order to use that library, you need to know the IP address and Device ID of y
   - Days until dirty
   - Filter change interval days
 
+### Button-entities
+
+- Activate / Deactivate Cooker hood
+
 ## Debugging
 
 If something is not working properly, logs might help with debugging. To turn on debug-logging add this to your `configuration.yaml`
@@ -111,5 +121,5 @@ If something is not working properly, logs might help with debugging. To turn on
 logger:
   default: info
   logs:
-    custom_components.flexit: debug
+    custom_components.flexit_bacnet: debug
 ```
