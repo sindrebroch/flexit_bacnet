@@ -49,8 +49,8 @@ async def run_bacnet(hass, device_address: str) -> Lite:
         async with async_timeout.timeout(10):
             LOGGER.debug("Get bacnet_lite")
             bacnet_lite = await hass.async_add_executor_job(BAC0.lite, local_ip, None, None, None, 0, None, True)
-        LOGGER.debug("Yield bacnet_lite")
-        yield bacnet_lite
+            LOGGER.debug("Yield bacnet_lite")
+            yield bacnet_lite
     except asyncio.TimeoutError as e:
         LOGGER.warning("run_bacnet timeout error %s", e)
     except Exception as e:
